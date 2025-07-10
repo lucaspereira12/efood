@@ -22,11 +22,16 @@ export const Box = styled.div`
   overflow-y: auto;
 
   > p {
-    color: ${colors.white};
+    color: ${colors.lightPeach};
   }
 
   .valor-total {
     margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    color: ${colors.lightPeach};
+    font-size: 14px;
+    font-weight: 700;
   }
 
   button {

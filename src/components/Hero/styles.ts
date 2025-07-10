@@ -1,23 +1,37 @@
 import styled from 'styled-components'
-import { colors } from '../../styles'
+import { breakpoints, colors } from '../../styles'
 
 export const HeroContainer = styled.header`
-  height: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  width: 100%;
+  height: 384px;
+  padding-top: 64px;
+  padding-bottom: 40px;
+  text-align: center;
+  color: ${colors.coralPink};
 
-  img {
-    margin-top: 40px;
+  @media (max-width: ${breakpoints.tablet}) {
+    height: auto;
+  }
+
+  a {
+    display: inline-block;
+
+    img {
+      display: block;
+    }
   }
 
   h1 {
-    margin-bottom: 40px;
-    max-width: 539px;
-    text-align: center;
     font-size: 36px;
     font-weight: 900;
-    color: ${colors.coralPink};
+    width: 539px;
+    height: 84px;
+    margin: 138px auto 0;
+
+    @media (max-width: ${breakpoints.tablet}) {
+      width: 85%;
+      height: auto;
+      font-size: 32px;
+    }
   }
 `

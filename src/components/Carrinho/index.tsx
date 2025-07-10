@@ -66,7 +66,10 @@ const Carrinho: React.FC<CarrinhoProps> = ({
                 />
               </Item>
             ))}
-            <p className="valor-total">Valor total - R$ {total.toFixed(2)}</p>
+            <div className="valor-total">
+              <p>Valor total</p>
+              <span>R$ {total.toFixed(2)}</span>
+            </div>
             <button onClick={onContinuar}>Continuar com a entrega</button>
           </>
         )}

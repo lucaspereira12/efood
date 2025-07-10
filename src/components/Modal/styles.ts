@@ -56,11 +56,18 @@ export const ModalContent = styled.div`
     }
 
     p {
-      margin-top: 18px;
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
+
+      &:last-of-type {
+        margin-top: 22px;
+      }
     }
 
     button {
-      margin-top: 8px;
+      margin-top: 16px;
       background-color: ${colors.lightPeach};
       color: ${colors.coralPink};
       font-weight: 700;

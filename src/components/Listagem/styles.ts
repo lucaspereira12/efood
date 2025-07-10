@@ -2,113 +2,114 @@ import styled from 'styled-components'
 import { breakpoints, colors } from '../../styles'
 
 export const ListagemDeRestaurantes = styled.div`
+  margin-top: 80px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 80px;
-  margin-top: 80px;
-  margin-bottom: 120px;
 
   @media (max-width: ${breakpoints.tablet}) {
     display: block;
-    grid-template-columns: 1fr;
-    justify-items: center;
   }
 `
 
 export const Item = styled.div`
-  max-width: 472px;
-  background-color: ${colors.white};
-  display: flex;
-  flex-direction: column;
+  width: 472px;
   position: relative;
 
-  @media (max-width: ${breakpoints.tablet}) {
-    margin-bottom: 80px;
+  @media (max-width: ${breakpoints.desktop}) {
+    width: 344px;
   }
 
-  img {
+  @media (max-width: ${breakpoints.tablet}) {
     width: 100%;
-    height: auto;
-    display: block;
+    margin-bottom: 80px;
   }
 
   .categoria-container {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    display: flex;
-    gap: 8px;
+    right: 0;
+    margin: 16px 16px 0 0;
+    display: inline-block;
+    justify-content: flex-end;
+    color: ${colors.lightPeach};
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  img {
+    width: 100%;
+    height: 217px;
+    object-fit: cover;
+    display: block;
   }
 
   .informacoes-do-restaurante {
+    background-color: ${colors.white};
     color: ${colors.coralPink};
-    padding: 8px;
     border: solid 1px ${colors.coralPink};
     border-top: none;
-    height: 100%;
+    position: relative;
+    padding: 8px 8px 8px 7px;
 
-    .titulo-avaliacao {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
+  .avaliacao {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    right: 8px;
+    height: 21px;
 
-      h1 {
-        font-weight: 700;
-        font-size: 18px;
-      }
-
-      div {
-        display: flex;
-        align-items: center;
-        font-size: 16px;
-        font-weight: 700;
-
-        img {
-          width: 21px;
-          height: 21px;
-          margin-right: 8px;
-        }
-      }
+    span {
+      font-size: 18px;
+      font-weight: 700;
+      height: 100%;
     }
 
-    p {
-      font-size: 14px;
-      width: 100%;
-      margin-top: 16px;
+    img {
+      width: 21px;
+      height: 21px;
+      margin-left: 8px;
     }
+  }
 
-    button {
-      margin-top: 16px;
-      background-color: ${colors.coralPink};
-      color: ${colors.white};
-      width: 82px;
-      height: 24px;
-      border: none;
-      cursor: pointer;
-    }
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    height: 21px;
+  }
+
+  p {
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+  }
+
+  button {
+    margin-top: 16px;
+    background-color: ${colors.coralPink};
+    color: ${colors.lightPeach};
+    font-weight: 700;
+    width: 82px;
+    height: 24px;
+    border: none;
+    cursor: pointer;
   }
 `
 
-export const Tipo = styled.div`
+const CategoriaBase = styled.div`
   background-color: ${colors.coralPink};
-  color: ${colors.white};
-  font-size: 12px;
-  font-weight: 700;
-  width: 61px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
+  padding: 6px 4px;
 `
 
-export const Destaque = styled.div`
-  background-color: ${colors.coralPink};
-  color: ${colors.white};
-  font-size: 12px;
-  font-weight: 700;
-  width: 121px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const Destaque = styled(CategoriaBase)`
+  margin-right: 8px;
 `
+
+export const Tipo = CategoriaBase

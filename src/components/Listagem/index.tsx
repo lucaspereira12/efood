@@ -32,30 +32,30 @@ const Listagem = ({ restaurante }: Props) => {
   const navigate = useNavigate()
 
   return (
-    <ListagemDeRestaurantes className="container">
-      {restaurante.map((restaurante) => (
-        <Item key={restaurante.id}>
-          <img src={restaurante.capa} alt={restaurante.titulo} />
-          <div className="categoria-container">
-            {restaurante.destacado && <Destaque>Destaque da semana</Destaque>}
-            <Tipo>{restaurante.tipo}</Tipo>
-          </div>
-          <div className="informacoes-do-restaurante">
-            <div className="titulo-avaliacao">
-              <h1>{restaurante.titulo}</h1>
-              <div>
-                <img src={estrelaIcon} alt="Estrela" />
-                {restaurante.avaliacao}
-              </div>
+    <>
+      <ListagemDeRestaurantes className="container">
+        {restaurante.map((restaurante) => (
+          <Item key={restaurante.id}>
+            <div className="categoria-container">
+              {restaurante.destacado && <Destaque>Destaque da semana</Destaque>}
+              <Tipo>{restaurante.tipo}</Tipo>
             </div>
-            <p>{restaurante.descricao}</p>
-            <button onClick={() => navigate(`/perfil/${restaurante.id}`)}>
-              Saiba mais
-            </button>
-          </div>
-        </Item>
-      ))}
-    </ListagemDeRestaurantes>
+            <img src={restaurante.capa} alt={restaurante.titulo} />
+            <div className="informacoes-do-restaurante">
+              <div className="avaliacao">
+                <span>{restaurante.avaliacao}</span>
+                <img src={estrelaIcon} alt="Estrela" />
+              </div>
+              <h1>{restaurante.titulo}</h1>
+              <p>{restaurante.descricao}</p>
+              <button onClick={() => navigate(`/perfil/${restaurante.id}`)}>
+                Saiba mais
+              </button>
+            </div>
+          </Item>
+        ))}
+      </ListagemDeRestaurantes>
+    </>
   )
 }
 

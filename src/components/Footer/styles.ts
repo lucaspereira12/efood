@@ -1,25 +1,27 @@
 import styled from 'styled-components'
-import { colors } from '../../styles'
+import { breakpoints, colors } from '../../styles'
 
 export const FooterContainer = styled.footer`
   background-color: ${colors.lightPeach};
-  // height: 298px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  width: 100%;
+  margin-top: 120px;
+  padding-top: 40px;
+  padding-bottom: 40px;
 
-  img {
+  > a {
     display: block;
-  }
+    margin: 0 auto;
+    width: fit-content;
 
-  > a > img {
-    margin-top: 40px;
+    img {
+      display: block;
+    }
   }
 
   ul {
     display: flex;
-    margin-top: 32px;
+    margin: 32px auto 0;
+    width: fit-content;
 
     li {
       margin-right: 8px;
@@ -27,15 +29,27 @@ export const FooterContainer = styled.footer`
       &:last-child {
         margin-right: 0;
       }
+
+      a img {
+        width: 24px;
+        height: 24px;
+        display: block;
+      }
     }
   }
 
   p {
     max-width: 480px;
+    height: 24px;
     font-size: 10px;
-    font-weight: 400;
-    text-align: center;
+    font-weight: 400px;
     color: ${colors.coralPink};
-    margin-top: 80px;
-    margin-bottom: 40px;
+    text-align: center;
+    margin: 80px auto 0;
+
+    @media (max-width: ${breakpoints.tablet}) {
+      width: 80%;
+      height: auto;
+    }
+  }
 `
