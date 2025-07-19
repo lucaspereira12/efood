@@ -1,6 +1,6 @@
-import { useForm, Controller } from 'react-hook-form'
-import { InputMask } from '@react-input/mask'
-import { Box, Form, Overlay } from './styles'
+import { useForm } from 'react-hook-form'
+import { Box, CepContainer, Form, Message, Overlay } from './styles'
+import { useState } from 'react'
 
 type FormEntrega = {
   nome: string
@@ -17,10 +17,37 @@ type Props = {
 }
 
 const Entrega = ({ onContinuar, onVoltar }: Props) => {
-  const { register, handleSubmit, control } = useForm<FormEntrega>()
+  const { register, handleSubmit, setValue, watch } = useForm<FormEntrega>()
+  const cepValue = watch('cep') || ''
+  const [cepNotFound, setCepNotFound] = useState(false)
 
   const onSubmit = () => {
     onContinuar()
+  }
+
+  const handleCepBlur = async (evento: React.FocusEvent<HTMLInputElement>) => {
+    const cep = evento.target.value.replace(/\D/g, '')
+
+    if (cep.length !== 8) return
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      const data = await response.json()
+
+      if (data.erro) {
+        setCepNotFound(true)
+        setTimeout(() => setCepNotFound(false), 1000)
+        return
+      }
+
+      setValue('endereco', data.logradouro)
+      setValue('cidade', data.localidade)
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error)
+      setCepNotFound(true)
+      setValue('cep', '')
+      setTimeout(() => setCepNotFound(false), 1000)
+    }
   }
 
   return (
@@ -46,18 +73,24 @@ const Entrega = ({ onContinuar, onVoltar }: Props) => {
           <div className="row">
             <label>
               CEP
-              <Controller
-                control={control}
-                name="cep"
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <InputMask
-                    mask="99999-999"
-                    replacement={{ 9: /\d/ }}
-                    {...field}
-                  />
-                )}
-              />
+              <CepContainer>
+                <input
+                  type="text"
+                  {...register('cep', {
+                    required: true,
+                    validate: (value) => value.replace(/\D/g, '').length === 8
+                  })}
+                  value={cepValue}
+                  onChange={(evento) => {
+                    const cpfFormat = evento.target.value
+                      .replace(/\D/g, '')
+                      .slice(0, 8)
+                    setValue('cep', cpfFormat)
+                  }}
+                  onBlur={handleCepBlur}
+                />
+                {cepNotFound && <Message>CEP não encontrado</Message>}
+              </CepContainer>
             </label>
 
             <label>

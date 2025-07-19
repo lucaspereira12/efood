@@ -80,3 +80,22 @@ export const Form = styled.form`
     }
   }
 `
+
+export const Message = styled.div`
+  position: absolute;
+  background-color: #333;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  top: 36px;
+  left: 0;
+  margin-top: 6px;
+  white-space: nowrap;
+  z-index: 3;
+`
+
+export const CepContainer = styled.div`
+  position: relative;
+  display: block;
+`

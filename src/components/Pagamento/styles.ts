@@ -95,3 +95,7 @@ export const Form = styled.form`
     }
   }
 `
+
+export const Message = styled.p`
+  color: ${colors.lightPeach};
+`
