@@ -5,7 +5,7 @@ import { apiSlice } from '../services/api'
 export type RootState = ReturnType<typeof store.getState>
 export const store = configureStore({
   reducer: {
-    cart: cartReducer,
+    carrinho: cartReducer,
     [apiSlice.reducerPath]: apiSlice.reducer
   },
   middleware: (getDefaultMiddleware) =>

@@ -1,78 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
 import { Produto } from '../../Pages/Home'
-export type CartState = typeof initialState
-export type CartItem = {
-  id: number
-  nome: string
-  foto: string
-  preco: number
-  quantidade: number
-}
-type initialState = {
-  items: Produto[]
-  isOpen: boolean
-  isOrder: boolean
-  isPayment: boolean
+
+type CarrinhoState = {
+  itens: Produto[]
 }
 
-const initialState: initialState = {
-  items: [],
-  isOpen: false,
-  isOrder: false,
-  isPayment: false
+const initialState: CarrinhoState = {
+  itens: []
 }
 
-export const cartSlice = createSlice({
-  name: 'cart',
+const cartSlice = createSlice({
+  name: 'carrinho',
   initialState,
   reducers: {
-    open: (state) => {
-      state.isOpen = true
+    add: (state, action: PayloadAction<Produto>) => {
+      state.itens.push(action.payload)
     },
-    close: (state) => {
-      state.isOpen = false
-    },
-
-    openOrder: (state) => {
-      state.isOrder = true
-    },
-    closeOrder: (state) => {
-      state.isOrder = false
-    },
-
-    openPayment: (state) => {
-      state.isPayment = true
-    },
-    closePayment: (state) => {
-      state.isPayment = false
-    },
-
-    // add: (state, action: PayloadAction<Produto>) => {
-    //   const geraId =
-    //     state.items.length > 0 ? state.items[state.items.length - 1].id + 1 : 1
-    //   state.items.push({ ...action.payload, id: geraId, quantidade: 1 })
-    // },
-
     remove: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter((item) => item.id !== action.payload)
+      state.itens.splice(action.payload, 1)
     },
-
     clear: (state) => {
-      state.items = []
+      state.itens = []
     }
   }
 })
 
-export const {
-  // add,
-  remove,
-  open,
-  close,
-  openOrder,
-  closeOrder,
-  openPayment,
-  closePayment,
-  clear
-} = cartSlice.actions
+export const { add, remove, clear } = cartSlice.actions
 export default cartSlice.reducer

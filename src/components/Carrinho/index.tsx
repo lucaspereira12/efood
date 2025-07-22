@@ -1,31 +1,21 @@
 import { Box, Overlay, Item } from './styles'
 
 import { useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { RootReducer } from '../../store'
+import { remove } from '../../store/reducers/cart'
 
 import lixeiraIcon from '../../assets/images/icones/lixeira.png'
 
-export type Produto = {
-  id: number
-  nome: string
-  descricao: string
-  foto: string
-  preco: number
-  porcao: string
-}
-
 type CarrinhoProps = {
-  produtos: Produto[]
-  onRemove: (index: number) => void
   onClose: () => void
   onContinuar: () => void
 }
 
-const Carrinho: React.FC<CarrinhoProps> = ({
-  produtos,
-  onRemove,
-  onClose,
-  onContinuar
-}) => {
+const Carrinho: React.FC<CarrinhoProps> = ({ onClose, onContinuar }) => {
+  const dispatch = useDispatch()
+  const produtos = useSelector((state: RootReducer) => state.carrinho.itens)
   const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -62,7 +52,7 @@ const Carrinho: React.FC<CarrinhoProps> = ({
                   alt="Lixeira"
                   className="lixeira"
                   title="Remover item do carrinho"
-                  onClick={() => onRemove(index)}
+                  onClick={() => dispatch(remove(index))}
                 />
               </Item>
             ))}
