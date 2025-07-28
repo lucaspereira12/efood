@@ -1,15 +1,8 @@
-import { useForm, Controller } from 'react-hook-form'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import { InputMask } from '@react-input/mask'
 import { Box, Form, Message, Overlay } from './styles'
 import { useState } from 'react'
-
-type FormPagamento = {
-  nomeCartao: string
-  numeroCartao: string
-  codigo: string
-  mesVencimento: string
-  anoVencimento: string
-}
 
 type Props = {
   onFinalizar: () => void
@@ -18,124 +11,134 @@ type Props = {
 }
 
 const Pagamento = ({ onFinalizar, onVoltar, total }: Props) => {
-  const { register, handleSubmit, control, getValues } =
-    useForm<FormPagamento>()
   const [isLoading, setIsLoading] = useState(false)
 
-  const onSubmit = async () => {
-    setIsLoading(true)
-
-    const dados = getValues()
-
-    try {
-      const resposta = await fetch('https://httpbin.org/post', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ...dados,
-          total
+  const formik = useFormik({
+    initialValues: {
+      nomeCartao: '',
+      numeroCartao: '',
+      codigo: '',
+      mesVencimento: '',
+      anoVencimento: ''
+    },
+    validationSchema: Yup.object({
+      nomeCartao: Yup.string().required('Nome no cartão é obrigatório'),
+      numeroCartao: Yup.string()
+        .required('Número do cartão é obrigatório')
+        .test('len', 'Número do cartão deve conter 16 dígitos', (val) => {
+          return val?.replace(/\D/g, '').length === 16
+        }),
+      codigo: Yup.string()
+        .required('CVV é obrigatório')
+        .test('len', 'CVV deve conter 3 dígitos', (val) => {
+          return val?.replace(/\D/g, '').length === 3
+        }),
+      mesVencimento: Yup.string()
+        .required('Mês de vencimento é obrigatório')
+        .test('mes', 'Mês inválido', (val) => {
+          const num = parseInt(val || '')
+          return num >= 1 && num <= 12
+        }),
+      anoVencimento: Yup.string()
+        .required('Ano de vencimento é obrigatório')
+        .test('ano', 'Ano inválido', (val) => {
+          const anoAtual = new Date().getFullYear()
+          return parseInt(val || '') >= anoAtual
         })
-      })
+    }),
+    onSubmit: async (values) => {
+      setIsLoading(true)
+      try {
+        const resposta = await fetch('https://httpbin.org/post', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...values, total })
+        })
 
-      if (!resposta.ok) {
-        throw new Error('Erro ao processar pagamento')
+        if (!resposta.ok) {
+          throw new Error('Erro ao processar pagamento')
+        }
+
+        const resultado = await resposta.json()
+        console.log('Pagamento enviado:', resultado)
+        onFinalizar()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
       }
-
-      const resultado = await resposta.json()
-      console.log('Pagamento enviado:', resultado)
-
-      onFinalizar()
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsLoading(false)
     }
-  }
+  })
 
   return (
     <Overlay>
       <Box>
         <h1>Pagamento - Valor a pagar R$ {total.toFixed(2)}</h1>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <label>
+        <Form onSubmit={formik.handleSubmit}>
+          <label htmlFor="nomeCartao">
             Nome no cartão
             <input
+              id="nomeCartao"
               type="text"
-              {...register('nomeCartao', { required: true })}
+              name="nomeCartao"
+              value={formik.values.nomeCartao}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
           </label>
 
           <div className="row">
-            <label>
+            <label htmlFor="numeroCartao">
               Número do cartão
-              <Controller
+              <InputMask
+                id="numeroCartao"
                 name="numeroCartao"
-                control={control}
-                rules={{
-                  required: true,
-                  validate: (value) => value.replace(/\D/g, '').length === 16
-                }}
-                render={({ field }) => (
-                  <InputMask
-                    mask="9999 9999 9999 9999"
-                    replacement={{ 9: /\d/ }}
-                    {...field}
-                  />
-                )}
+                mask="9999 9999 9999 9999"
+                replacement={{ 9: /\d/ }}
+                value={formik.values.numeroCartao}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </label>
-            <label>
+
+            <label htmlFor="codigo">
               CVV
-              <Controller
+              <InputMask
+                id="codigo"
                 name="codigo"
-                control={control}
-                rules={{
-                  required: true,
-                  validate: (value) => value.replace(/\D/g, '').length === 3
-                }}
-                render={({ field }) => (
-                  <InputMask mask="999" replacement={{ 9: /\d/ }} {...field} />
-                )}
+                mask="999"
+                replacement={{ 9: /\d/ }}
+                value={formik.values.codigo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </label>
           </div>
 
           <div className="row">
-            <label>
+            <label htmlFor="mesVencimento">
               Mês de vencimento
-              <Controller
+              <InputMask
+                id="mesVencimento"
                 name="mesVencimento"
-                control={control}
-                rules={{
-                  required: true,
-                  validate: (value) => {
-                    const num = parseInt(value)
-                    return num >= 1 && num <= 12
-                  }
-                }}
-                render={({ field }) => (
-                  <InputMask mask="99" replacement={{ 9: /\d/ }} {...field} />
-                )}
+                mask="99"
+                replacement={{ 9: /\d/ }}
+                value={formik.values.mesVencimento}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </label>
 
-            <label>
+            <label htmlFor="anoVencimento">
               Ano de vencimento
-              <Controller
+              <InputMask
+                id="anoVencimento"
                 name="anoVencimento"
-                control={control}
-                rules={{
-                  required: true,
-                  validate: (value) => {
-                    const anoAtual = new Date().getFullYear()
-                    return parseInt(value) >= anoAtual
-                  }
-                }}
-                render={({ field }) => (
-                  <InputMask mask="9999" replacement={{ 9: /\d/ }} {...field} />
-                )}
+                mask="9999"
+                replacement={{ 9: /\d/ }}
+                value={formik.values.anoVencimento}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </label>
           </div>

@@ -1,15 +1,7 @@
-import { useForm } from 'react-hook-form'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import { Box, CepContainer, Form, Message, Overlay } from './styles'
 import { useState } from 'react'
-
-type FormEntrega = {
-  nome: string
-  endereco: string
-  cidade: string
-  cep: string
-  numero: string
-  complemento?: string
-}
 
 type Props = {
   onContinuar: () => void
@@ -17,13 +9,31 @@ type Props = {
 }
 
 const Entrega = ({ onContinuar, onVoltar }: Props) => {
-  const { register, handleSubmit, setValue, watch } = useForm<FormEntrega>()
-  const cepValue = watch('cep') || ''
   const [cepNotFound, setCepNotFound] = useState(false)
 
-  const onSubmit = () => {
-    onContinuar()
-  }
+  const form = useFormik({
+    initialValues: {
+      nome: '',
+      endereco: '',
+      cidade: '',
+      cep: '',
+      numero: '',
+      complemento: ''
+    },
+    validationSchema: Yup.object({
+      nome: Yup.string()
+        .min(3, 'O nome precisa ter pelo menos 3 caracteres')
+        .required('O campo é obrigatório'),
+      endereco: Yup.string().required('O campo é obrigatório'),
+      cidade: Yup.string().required('O campo é obrigatório'),
+      cep: Yup.string().required('O campo é obrigatório'),
+      numero: Yup.string().required('O campo é obrigatório'),
+      complemento: Yup.string().optional()
+    }),
+    onSubmit: () => {
+      onContinuar()
+    }
+  })
 
   const handleCepBlur = async (evento: React.FocusEvent<HTMLInputElement>) => {
     const cep = evento.target.value.replace(/\D/g, '')
@@ -40,12 +50,12 @@ const Entrega = ({ onContinuar, onVoltar }: Props) => {
         return
       }
 
-      setValue('endereco', data.logradouro)
-      setValue('cidade', data.localidade)
+      form.setFieldValue('endereco', data.logradouro)
+      form.setFieldValue('cidade', data.localidade)
     } catch (error) {
       console.error('Erro ao buscar CEP:', error)
       setCepNotFound(true)
-      setValue('cep', '')
+      form.setFieldValue('cep', '')
       setTimeout(() => setCepNotFound(false), 1000)
     }
   }
@@ -54,38 +64,57 @@ const Entrega = ({ onContinuar, onVoltar }: Props) => {
     <Overlay>
       <Box>
         <h1>Entrega</h1>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <label>
+        <Form onSubmit={form.handleSubmit}>
+          <label htmlFor="nome">
             Quem irá receber
-            <input type="text" {...register('nome', { required: true })} />
+            <input
+              id="nome"
+              type="text"
+              name="nome"
+              value={form.values.nome}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+            />
           </label>
 
-          <label>
+          <label htmlFor="endereco">
             Endereço
-            <input type="text" {...register('endereco', { required: true })} />
+            <input
+              id="endereco"
+              type="text"
+              name="endereco"
+              value={form.values.endereco}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+            />
           </label>
 
-          <label>
+          <label htmlFor="cidade">
             Cidade
-            <input type="text" {...register('cidade', { required: true })} />
+            <input
+              id="cidade"
+              type="text"
+              name="cidade"
+              value={form.values.cidade}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+            />
           </label>
 
           <div className="row">
-            <label>
+            <label htmlFor="cep">
               CEP
               <CepContainer>
                 <input
+                  id="cep"
                   type="text"
-                  {...register('cep', {
-                    required: true,
-                    validate: (value) => value.replace(/\D/g, '').length === 8
-                  })}
-                  value={cepValue}
+                  name="cep"
+                  value={form.values.cep}
                   onChange={(evento) => {
                     const cpfFormat = evento.target.value
                       .replace(/\D/g, '')
                       .slice(0, 8)
-                    setValue('cep', cpfFormat)
+                    form.setFieldValue('cep', cpfFormat)
                   }}
                   onBlur={handleCepBlur}
                 />
@@ -93,18 +122,34 @@ const Entrega = ({ onContinuar, onVoltar }: Props) => {
               </CepContainer>
             </label>
 
-            <label>
+            <label htmlFor="numero">
               Número
-              <input type="text" {...register('numero', { required: true })} />
+              <input
+                id="numero"
+                type="text"
+                name="numero"
+                value={form.values.numero}
+                onChange={form.handleChange}
+                onBlur={form.handleBlur}
+              />
             </label>
           </div>
 
-          <label>
+          <label htmlFor="complemento">
             Complemento (opcional)
-            <input type="text" {...register('complemento')} />
+            <input
+              id="complemento"
+              type="text"
+              name="complemento"
+              value={form.values.complemento}
+              onChange={form.handleChange}
+              onBlur={form.handleBlur}
+            />
           </label>
 
-          <button type="submit">Continuar com o pagamento</button>
+          <button type="button" onClick={() => form.handleSubmit()}>
+            Continuar com o pagamento
+          </button>
           <button type="button" onClick={onVoltar}>
             Voltar para o carrinho
           </button>
