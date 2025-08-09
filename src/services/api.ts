@@ -5,7 +5,7 @@ import { Restaurante } from '../Pages/Home'
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://fake-api-tau.vercel.app/api/efood/'
+    baseUrl: 'https://ebac-fake-api.vercel.app/api/efood/'
   }),
   endpoints: (builder) => ({
     getRestaurantes: builder.query<Restaurante[], void>({
