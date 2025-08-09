@@ -1,24 +1,20 @@
 import { HeaderContainer } from './styles'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootReducer } from '../../store'
 
 import imagemDeFundo from '../../assets/images/fundo-header.png'
 import logo from '../../assets/images/logo.png'
+import { open } from '../../store/reducers/cart'
 
-export type Produto = {
-  id: number
-  nome: string
-  descricao: string
-  foto: string
-  preco: number
-  porcao: string
-}
+const Header = () => {
+  const dispatch = useDispatch()
+  const { items } = useSelector((state: RootReducer) => state.cart)
 
-type HeaderProps = {
-  produtos: Produto[]
-  onCarrinhoClick: () => void
-}
+  const cartOpen = () => {
+    dispatch(open())
+  }
 
-const Header: React.FC<HeaderProps> = ({ produtos, onCarrinhoClick }) => {
   return (
     <HeaderContainer style={{ backgroundImage: `url(${imagemDeFundo})` }}>
       <div className="container">
@@ -32,8 +28,8 @@ const Header: React.FC<HeaderProps> = ({ produtos, onCarrinhoClick }) => {
         <Link to="/" className="link-logo">
           <img src={logo} alt="Logo" />
         </Link>
-        <button onClick={onCarrinhoClick}>
-          {produtos.length} produto(s) no carrinho
+        <button onClick={cartOpen}>
+          {items.length} produto(s) no carrinho
         </button>
       </div>
     </HeaderContainer>

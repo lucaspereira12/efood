@@ -1,43 +1,64 @@
+import { useState } from 'react'
+import Modal from '../Modal'
 import { Item, ProdutosContainer } from './styles'
+import { useDispatch } from 'react-redux'
+import { add, open } from '../../store/reducers/cart'
 
-export type Produto = {
+type Produto = {
   id: number
   nome: string
   descricao: string
   foto: string
-  preco: number
   porcao: string
-}
-
-export type Restaurante = {
-  id: number
-  capa: string
-  destacado: boolean
-  tipo: string
-  titulo: string
-  avaliacao: number
-  descricao: string
-  cardapio: Produto[]
+  preco: number
 }
 
 type Props = {
-  restaurante: Restaurante
-  maisDetalhes: (produto: Produto) => void
+  produtos: Produto[]
 }
 
-const Produtos = ({ restaurante, maisDetalhes }: Props) => {
+const Produtos = ({ produtos }: Props) => {
+  const [produtoSelecionado, setProdutoSelecionado] = useState<Produto | null>(
+    null
+  )
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const dispatch = useDispatch()
+
+  const abrirModal = (produto: Produto) => {
+    setProdutoSelecionado(produto)
+    setIsModalOpen(true)
+  }
+
+  const fecharModal = () => {
+    setIsModalOpen(false)
+  }
+
+  const adicionarAoCarrinho = (produto: Produto) => {
+    dispatch(add(produto))
+    fecharModal()
+    dispatch(open())
+  }
+
   return (
     <>
       <ProdutosContainer className="container">
-        {restaurante.cardapio?.map((produto) => (
+        {produtos.map((produto) => (
           <Item key={produto.id}>
             <img src={produto.foto} alt={produto.nome} />
             <h1>{produto.nome}</h1>
             <p>{produto.descricao}</p>
-            <button onClick={() => maisDetalhes(produto)}>Mais detalhes</button>
+            <button onClick={() => abrirModal(produto)}>Mais detalhes</button>
           </Item>
         ))}
       </ProdutosContainer>
+
+      <Modal
+        show={isModalOpen}
+        onClose={fecharModal}
+        produto={produtoSelecionado}
+        addCarrinho={adicionarAoCarrinho}
+      />
     </>
   )
 }

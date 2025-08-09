@@ -1,30 +1,26 @@
-import React from 'react'
 import { Box, Close, Overlay, ModalContent } from './styles'
 
 import closeIcon from '../../assets/images/icones/close.png'
 
-export type Produto = {
+import { formatarPreco } from '../../utils'
+
+type Produto = {
   id: number
+  foto: string
   nome: string
   descricao: string
-  foto: string
-  preco: number
   porcao: string
+  preco: number
 }
 
-type ModalProps = {
+type Props = {
   show: boolean
   onClose: () => void
   produto: Produto | null
   addCarrinho: (produto: Produto) => void
 }
 
-const Modal: React.FC<ModalProps> = ({
-  show,
-  onClose,
-  produto,
-  addCarrinho
-}) => {
+const Modal = ({ show, onClose, produto, addCarrinho }: Props) => {
   if (!show || !produto) return null
 
   return (
@@ -40,7 +36,7 @@ const Modal: React.FC<ModalProps> = ({
             <p>{produto.descricao}</p>
             <p>Serve: {produto.porcao}</p>
             <button onClick={() => addCarrinho(produto)}>
-              Adicionar ao carrinho - R$ {produto.preco}
+              Adicionar ao carrinho - {formatarPreco(produto.preco)}
             </button>
           </div>
         </ModalContent>

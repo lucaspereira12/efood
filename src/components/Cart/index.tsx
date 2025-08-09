@@ -4,24 +4,37 @@ import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { RootReducer } from '../../store'
-import { remove } from '../../store/reducers/cart'
+import { close, remove } from '../../store/reducers/cart'
+import { open } from '../../store/reducers/checkout'
+import { formatarPreco, precoTotal } from '../../utils'
 
 import lixeiraIcon from '../../assets/images/icones/lixeira.png'
 
-type CarrinhoProps = {
-  onClose: () => void
-  onContinuar: () => void
-}
+const Cart = () => {
+  const { items } = useSelector((state: RootReducer) => state.cart)
 
-const Carrinho: React.FC<CarrinhoProps> = ({ onClose, onContinuar }) => {
   const dispatch = useDispatch()
-  const produtos = useSelector((state: RootReducer) => state.carrinho.itens)
+
+  const closeCart = () => {
+    dispatch(close())
+  }
+
+  const openCheckout = () => {
+    closeCart()
+    dispatch(open())
+  }
+
+  const removeItem = (id: number) => {
+    dispatch(remove(id))
+  }
+
+  const produtos = useSelector((state: RootReducer) => state.cart.items)
   const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (boxRef.current && !boxRef.current.contains(event.target as Node)) {
-        onClose()
+        dispatch(close())
       }
     }
 
@@ -29,9 +42,7 @@ const Carrinho: React.FC<CarrinhoProps> = ({ onClose, onContinuar }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [onClose])
-
-  const total = produtos.reduce((soma, item) => soma + item.preco, 0)
+  })
 
   return (
     <Overlay>
@@ -52,15 +63,15 @@ const Carrinho: React.FC<CarrinhoProps> = ({ onClose, onContinuar }) => {
                   alt="Lixeira"
                   className="lixeira"
                   title="Remover item do carrinho"
-                  onClick={() => dispatch(remove(index))}
+                  onClick={() => removeItem(produto.id)}
                 />
               </Item>
             ))}
             <div className="valor-total">
               <p>Valor total</p>
-              <span>R$ {total.toFixed(2)}</span>
+              <span>R$ {formatarPreco(precoTotal(items))}</span>
             </div>
-            <button onClick={onContinuar}>Continuar com a entrega</button>
+            <button onClick={openCheckout}>Continuar com a entrega</button>
           </>
         )}
       </Box>
@@ -68,4 +79,4 @@ const Carrinho: React.FC<CarrinhoProps> = ({ onClose, onContinuar }) => {
   )
 }
 
-export default Carrinho
+export default Cart

@@ -19,12 +19,35 @@ export const Box = styled.div`
   width: 360px;
   height: 100vh;
   padding: 32px 8px 8px;
+  color: ${colors.lightPeach};
 
   h1 {
-    color: ${colors.lightPeach};
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 8px;
+  }
+
+  .confirmacao {
+    h1 {
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 14px;
+      font-weight: 400;
+      margin-bottom: 26px;
+    }
+
+    button {
+      background-color: ${colors.lightPeach};
+      color: ${colors.coralPink};
+      font-weight: bold;
+      font-size: 14px;
+      width: 100%;
+      height: 24px;
+      border: none;
+      cursor: pointer;
+    }
   }
 `
 
@@ -33,7 +56,6 @@ export const Form = styled.form`
   flex-direction: column;
 
   label {
-    color: ${colors.lightPeach};
     font-size: 14px;
     font-weight: 700;
     display: flex;
@@ -46,15 +68,45 @@ export const Form = styled.form`
     padding: 8px;
     font-size: 14px;
     font-weight: 700;
-    border: none;
+    border: 2px solid transparent;
+    box-sizing: border-box;
     margin-top: 8px;
     outline: none;
     background-color: ${colors.lightPeach};
     color: ${colors.grayDark};
+
+    &.erro {
+      border-color: red;
+      box-shadow: 0 0 2px red;
+    }
   }
 
-  .row {
+  .row-cep {
     display: flex;
+    gap: 34px;
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .row-cartao {
+    display: flex;
+  }
+
+  .row-cartao:first-of-type {
+    gap: 30px;
+
+    label:first-of-type input {
+      width: 228px;
+    }
+
+    label:last-of-type input {
+      width: 87px;
+    }
+  }
+
+  .row-cartao:last-of-type {
     gap: 34px;
 
     input {
@@ -81,7 +133,7 @@ export const Form = styled.form`
   }
 `
 
-export const Message = styled.div`
+export const MessageCep = styled.div`
   position: absolute;
   background-color: #333;
   color: white;

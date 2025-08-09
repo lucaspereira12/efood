@@ -1,40 +1,28 @@
 import { useNavigate } from 'react-router-dom'
-
 import { Destaque, Item, ListagemDeRestaurantes, Tipo } from './styles'
-
 import estrelaIcon from '../../assets/images/icones/estrela.png'
 
-export type Produto = {
+type Restaurante = {
   id: number
-  nome: string
-  descricao: string
-  foto: string
-  preco: number
-  porcao: string
-}
-
-export type Restaurante = {
-  id: number
-  capa: string
-  destacado: boolean
-  tipo: string
   titulo: string
-  avaliacao: number
+  tipo: string
+  capa: string
   descricao: string
-  cardapio: Produto[]
+  avaliacao: number
+  destacado: boolean
 }
 
 type Props = {
-  restaurante: Restaurante[]
+  restaurantes: Restaurante[]
 }
 
-const Listagem = ({ restaurante }: Props) => {
+const Listagem = ({ restaurantes }: Props) => {
   const navigate = useNavigate()
 
   return (
     <>
       <ListagemDeRestaurantes className="container">
-        {restaurante.map((restaurante) => (
+        {restaurantes.map((restaurante) => (
           <Item key={restaurante.id}>
             <div className="categoria-container">
               {restaurante.destacado && <Destaque>Destaque da semana</Destaque>}

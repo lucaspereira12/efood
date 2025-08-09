@@ -1,9 +1,40 @@
-// src/services/apiSlice.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Restaurante } from '../Pages/Home'
 
-export const apiSlice = createApi({
-  reducerPath: 'api',
+type Products = {
+  id: number
+  price: number
+}
+
+type PurchasePayload = {
+  products: Products[]
+  delivery: {
+    receiver: string
+    address: {
+      description: string
+      city: string
+      zipCode: string
+      number: number
+      complement: string
+    }
+  }
+  payment: {
+    card: {
+      name: string
+      number: string
+      code: number
+      expires: {
+        month: number
+        year: number
+      }
+    }
+  }
+}
+
+type PurchaseResponse = {
+  orderId: string
+}
+
+export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://ebac-fake-api.vercel.app/api/efood/'
   }),
@@ -11,16 +42,23 @@ export const apiSlice = createApi({
     getRestaurantes: builder.query<Restaurante[], void>({
       query: () => 'restaurantes'
     }),
-    getRestaurantePorId: builder.query<Restaurante | undefined, number>({
-      queryFn: async (id, _api, _extraOptions, fetchWithBQ) => {
-        const res = await fetchWithBQ('restaurantes')
-        if (res.error) return { error: res.error }
-        const data = res.data as Restaurante[]
-        const restaurante = data.find((r) => r.id === id)
-        return { data: restaurante }
-      }
+    getPerfil: builder.query<Restaurante | undefined, string>({
+      query: (id) => `restaurantes/${id}`
+    }),
+    purchase: builder.mutation<PurchaseResponse, PurchasePayload>({
+      query: (body) => ({
+        url: 'checkout',
+        method: 'POST',
+        body
+      })
     })
   })
 })
 
-export const { useGetRestaurantesQuery, useGetRestaurantePorIdQuery } = apiSlice
+export const {
+  useGetRestaurantesQuery,
+  useGetPerfilQuery,
+  usePurchaseMutation
+} = api
+
+export default api
