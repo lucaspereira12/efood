@@ -46,8 +46,14 @@ const Checkout = () => {
         .required('Campo obrigatório'),
       endereco: Yup.string().required('Campo obrigatório'),
       cidade: Yup.string().required('Campo obrigatório'),
-      cep: Yup.string().required('Campo obrigatório'),
-      numero: Yup.string().required('Campo obrigatório'),
+      cep: Yup.string()
+        .required('Campo obrigatório')
+        .transform((value) => (value ? value.replace(/\D/g, '') : ''))
+        .test(
+          'len',
+          'CEP inválido. Deve conter 8 dígitos numéricos',
+          (val) => !!val && val.length === 8
+        ),
       complemento: Yup.string(),
       nomeCartao: Yup.string().required('Campo obrigatório'),
       numeroCartao: Yup.string()
